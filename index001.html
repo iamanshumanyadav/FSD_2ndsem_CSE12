@@ -3,9 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>CLASS TEST</title>
+    <style>
+        body {
+            font-family:Arial, Helvetica, sans-serif;
+            background-color: rgb(0, 0, 0);
+            margin: 0;
+            padding: 0;
+        }
+        .course-container {
+            max-width: 8000px;
+            background: #000000;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: rgb(255, 0, 0);
+            text-align: center;
+        }
+        p {
+            text-align: center;
+            color: rgb(191, 126, 218);
+            line-height: 1.6;
+        }
+        .video-section {
+            margin: 30px;
+            text-align: center;
+        }
+         iframe {
+            width: 100%;
+            height: 400px;
+            border-radius: 6px;
+        }
+        .modules {
+            margin-top: 30px;
+        }
+        .modules h2 {
+            text-align: center;
+            color: #9ebad6;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            background: #d8be86;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>CLASS TEST</h1>
+    <div class="course-container">
+        <h1>
+            <big>WEB DEVELOPMENT COURSE</big>
+        </h1>
+        <p>
+            Basics of WEB DEVELOPMENT using HTML and CSS.
+        </p>
+        <div class="video-section">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/G3e-cpL7ofc?si=kHEly7gRCp3jClj5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="modules">
+            <h2>Course Modules</h2>
+            <ul> <center>
+                <li>UNIT-1:Bsics of HTML</li>
+                <li>UNIT-2:HTML PART-I and PART-II</li>
+                <li>UNIT-3:Basics of CSS</li>
+                <li>UNIT-4:CSS PART-I</li>
+                <li>UNIT-5:CSS PART-II</li>
+                <li>Projects 01 to 5</li>
+                </center>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
