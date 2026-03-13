@@ -1,0 +1,122 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --border: #e1e5eb;
+    --text: #1a202c;
+    --text-muted: #6b7280;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 48px 16px;
+}
+
+.container {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+}
+
+.container h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.field-row input {
+    flex: 1;
+    padding: 9px 13px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.field-row input::placeholder {
+    color: var(--text-muted);
+}
+
+.field-row input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.field-row button {
+    flex-shrink: 0;
+    padding: 9px 18px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 150ms ease, transform 150ms ease;
+    white-space: nowrap;
+}
+
+.field-row button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.field-row button:active {
+    transform: translateY(0);
+}
+
+#output {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    min-height: 52px;
+    text-align: left;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    .field-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
