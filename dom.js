@@ -1,0 +1,15 @@
+let newheading =document.getElementById("heading");
+newheading.textContent="DOM Manipulation in JavaScript";
+newheading.style.color="red";
+newheading.style.fontSize="50px";
+
+let paragraph =document.getElementById("paragraph");
+paragraph[0].innerHTML ="<strong>This paragraph has been updated using Javascript.</strong>";
+paragraph[0].style.color ="green";
+paragraph[0].style.fontSize ="20px";
+
+let NewElement =document.createElement("div");
+NewElement.textContent = "This is a new div element created using JavaScript";
+NewElement.style.color ="blue";
+NewElement.style.fontSize="15px";
+document.body.appendChild(NewElement);
