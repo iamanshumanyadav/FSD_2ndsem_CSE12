@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tasks</title>
+ 
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+ 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+ 
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+    :root {
+      --bg:         #f2f2f7;
+      --surface:    #ffffff;
+      --surface2:   #f9f9fb;
+      --line:       rgba(60,60,67,0.12);
+      --line-strong:rgba(60,60,67,0.18);
+      --text:       #1c1c1e;
+      --text2:      #3a3a3c;
+      --dim:        #8e8e93;
+      --mute:       #c7c7cc;
+      --blue:       #007aff;
+      --blue-soft:  rgba(0,122,255,0.10);
+      --red:        #ff3b30;
+      --red-soft:   rgba(255,59,48,0.10);
+      --orange:     #ff9500;
+      --orange-soft:rgba(255,149,0,0.10);
+      --green:      #34c759;
+      --green-soft: rgba(52,199,89,0.10);
+      --radius:     12px;
+      --radius-sm:  8px;
+    }
+ 
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'Inter', sans-serif;
+      font-size: 15px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+ 
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+ 
+    /* ── Sidebar ── */
+    .sidebar {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid var(--line);
+      padding: 32px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+ 
+    .brand {
+      padding: 4px 8px;
+    }
+ 
+    .brand h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+ 
+    .brand p {
+      font-size: 12px;
+      color: var(--dim);
+      font-weight: 400;
+      margin-top: 2px;
+    }
+ 
+    /* Summary tiles */
+    .tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+ 
+    .tile {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+ 
+    .tile-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+ 
+    .tile-num {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+ 
+    .tile-label {
+      font-size: 11px;
+      color: var(--dim);
+      font-weight: 400;
+    }
+ 
+    /* Nav */
+    .nav-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+ 
+    .nav-heading {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      padding: 0 10px;
+      margin-bottom: 4px;
+    }
+ 
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text2);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      transition: background 0.12s;
+      text-align: left;
+      width: 100%;
+    }
+ 
+    .nav-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+ 
+    .nav-item:hover { background: rgba(0,0,0,0.04); }
+ 
+    .nav-item.active {
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 500;
+    }
+ 
+    .nav-count {
+      font-size: 12px;
+      color: var(--dim);
+      font-weight: 400;
+      background: rgba(0,0,0,0.06);
+      border-radius: 10px;
+      padding: 0 7px;
+      min-width: 20px;
+      text-align: center;
+      line-height: 18px;
+    }
+ 
+    .nav-item.active .nav-count {
+      background: rgba(0,122,255,0.15);
+      color: var(--blue);
+    }
+ 
+    /* Progress ring area */
+    .progress-area {
+      margin-top: auto;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+ 
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+ 
+    .progress-label span:first-child {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+ 
+    .progress-label span:last-child {
+      font-size: 12px;
+      color: var(--blue);
+      font-weight: 600;
+    }
+ 
+    .progress-track {
+      height: 6px;
+      background: var(--line);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+ 
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), #5ac8fa);
+      border-radius: 3px;
+      transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    }
+ 
+    /* ── Main ── */
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+ 
+    /* Topbar */
+    .topbar {
+      background: rgba(242,242,247,0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 28px 36px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+ 
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+ 
+    .page-sub {
+      font-size: 13px;
+      color: var(--dim);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+ 
+    .topbar-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+ 
+    .ctrl-btn {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--text2);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+ 
+    .ctrl-btn:hover { background: var(--surface2); }
+ 
+    .ctrl-btn.danger:hover { background: var(--red-soft); border-color: rgba(255,59,48,0.2); color: var(--red); }
+ 
+    select.ctrl-btn {
+      outline: none;
+      appearance: none;
+      padding-right: 24px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238e8e93' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+ 
+    /* ── Input ── */
+    .input-area {
+      padding: 20px 36px;
+      border-bottom: 1px solid var(--line);
+    }
+ 
+    .input-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+ 
+    .input-card:focus-within {
+      border-color: rgba(0,122,255,0.4);
+      box-shadow: 0 0 0 3px rgba(0,122,255,0.08);
+    }
+ 
+    .input-icon {
+      color: var(--blue);
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+ 
+    .task-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+    }
+ 
+    .task-input::placeholder { color: var(--mute); }
+ 
+    .pills {
+      display: flex;
+      gap: 5px;
+    }
+ 
+    .pill {
+      border: 1px solid var(--line);
+      background: transparent;
+      border-radius: 20px;
+      padding: 4px 11px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--dim);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.12s;
+    }
+ 
+    .pill.high.on  { border-color: var(--red);    color: var(--red);    background: var(--red-soft); }
+    .pill.med.on   { border-color: var(--orange);  color: var(--orange); background: var(--orange-soft); }
+    .pill.low.on   { border-color: var(--green);   color: var(--green);  background: var(--green-soft); }
+    .pill:not(.on):hover { border-color: var(--dim); color: var(--text); }
+ 
+    .add-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 7px 18px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.12s, transform 0.1s;
+      flex-shrink: 0;
+    }
+ 
+    .add-btn:hover  { opacity: 0.88; }
+    .add-btn:active { transform: scale(0.97); }
+ 
+    /* ── Content ── */
+    .content {
+      flex: 1;
+      padding: 24px 36px;
+    }
+ 
+    /* Group header */
+    .group-header {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--dim);
+      margin-bottom: 8px;
+      margin-top: 24px;
+    }
+ 
+    .group-header:first-child { margin-top: 0; }
+ 
+    /* Task rows inside a card */
+    .task-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      margin-bottom: 8px;
+    }
+ 
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--line);
+      transition: background 0.1s;
+      animation: rowIn 0.18s ease both;
+    }
+ 
+    .task-row:last-child { border-bottom: none; }
+    .task-row:hover { background: var(--surface2); }
+ 
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateY(-3px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+ 
+    /* Checkbox */
+    .check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--mute);
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      font-size: 11px;
+      color: white;
+      font-weight: 700;
+    }
+ 
+    .check:hover { border-color: var(--blue); }
+ 
+    .check.checked { background: var(--green); border-color: var(--green); }
+ 
+    /* Priority dot */
+    .p-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+ 
+    .p-dot.high { background: var(--red); }
+    .p-dot.med  { background: var(--orange); }
+    .p-dot.low  { background: var(--green); }
+    .p-dot.none { background: transparent; border: 1.5px solid var(--mute); }
+ 
+    .task-text {
+      flex: 1;
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 400;
+    }
+ 
+    .task-text.done {
+      color: var(--mute);
+      text-decoration: line-through;
+    }
+ 
+    .edit-input {
+      flex: 1;
+      border: none;
+      border-bottom: 1.5px solid var(--blue);
+      background: transparent;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      padding-bottom: 1px;
+    }
+ 
+    /* Row actions */
+    .row-actions {
+      display: flex;
+      gap: 2px;
+      opacity: 0;
+      transition: opacity 0.12s;
+    }
+ 
+    .task-row:hover .row-actions { opacity: 1; }
+ 
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--dim);
+      cursor: pointer;
+      font-size: 13px;
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.1s, color 0.1s;
+    }
+ 
+    .icon-btn:hover         { background: rgba(0,0,0,0.06); color: var(--text); }
+    .icon-btn.del:hover     { background: var(--red-soft); color: var(--red); }
+ 
+    /* Empty */
+    .empty {
+      text-align: center;
+      padding: 64px 20px;
+      color: var(--dim);
+    }
+ 
+    .empty-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.4; }
+    .empty p    { font-size: 15px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+    .empty span { font-size: 13px; color: var(--dim); }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+ 
+<script type="text/babel">
+  const PRI = {
+    high: { label: 'High',   color: 'var(--red)',    soft: 'var(--red-soft)',    dot: '#ff3b30' },
+    med:  { label: 'Medium', color: 'var(--orange)', soft: 'var(--orange-soft)', dot: '#ff9500' },
+    low:  { label: 'Low',    color: 'var(--green)',  soft: 'var(--green-soft)',  dot: '#34c759' },
+    none: { label: 'None' },
+  };
+ 
+  function App() {
+    const [text, setText] = React.useState('');
+    const [pri, setPri] = React.useState('none');
+    const [tasks, setTasks] = React.useState([
+      { id: 1, text: 'Review project brief',       completed: false, priority: 'high' },
+      { id: 2, text: 'Reply to design feedback',   completed: false, priority: 'med'  },
+      { id: 3, text: 'Schedule team sync',          completed: false, priority: 'med'  },
+      { id: 4, text: 'Update dependencies',         completed: true,  priority: 'low'  },
+      { id: 5, text: 'Write release notes',         completed: true,  priority: 'none' },
+    ]);
+    const [filter, setFilter] = React.useState('all');
+    const [sort, setSort]     = React.useState('added');
+    const [editId, setEditId] = React.useState(null);
+    const [editTxt, setEditTxt] = React.useState('');
+ 
+    const add = () => {
+      if (!text.trim()) return;
+      setTasks(p => [{ id: Date.now(), text: text.trim(), completed: false, priority: pri }, ...p]);
+      setText(''); setPri('none');
+    };
+ 
+    const toggle = id => setTasks(p => p.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+    const del    = id => setTasks(p => p.filter(t => t.id !== id));
+    const clear  = ()  => setTasks(p => p.filter(t => !t.completed));
+ 
+    const saveEdit = id => {
+      if (editTxt.trim()) setTasks(p => p.map(t => t.id === id ? { ...t, text: editTxt.trim() } : t));
+      setEditId(null);
+    };
+ 
+    const priOrder = { high: 0, med: 1, low: 2, none: 3 };
+ 
+    const visible = tasks
+      .filter(t => {
+        if (filter === 'active') return !t.completed;
+        if (filter === 'done')   return t.completed;
+        if (filter === 'high')   return t.priority === 'high';
+        return true;
+      })
+      .sort((a, b) => {
+        if (sort === 'priority') return priOrder[a.priority] - priOrder[b.priority];
+        if (sort === 'alpha')    return a.text.localeCompare(b.text);
+        return 0;
+      });
+ 
+    const active  = tasks.filter(t => !t.completed);
+    const done    = tasks.filter(t => t.completed);
+    const pct     = tasks.length === 0 ? 0 : Math.round((done.length / tasks.length) * 100);
+ 
+    // Group visible tasks into active + done sections when showing all
+    const showGrouped = filter === 'all' && sort === 'added';
+    const activeVis = visible.filter(t => !t.completed);
+    const doneVis   = visible.filter(t => t.completed);
+ 
+    const today = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+ 
+    const navItems = [
+      { key:'all',    label:'All tasks',      count: tasks.length,           dot: null         },
+      { key:'active', label:'Active',          count: active.length,          dot: '#007aff'    },
+      { key:'high',   label:'High priority',   count: tasks.filter(t=>t.priority==='high').length, dot:'#ff3b30' },
+      { key:'done',   label:'Completed',       count: done.length,            dot: '#34c759'    },
+    ];
+ 
+    const renderRows = (list) => list.map(t => (
+      <div className="task-row" key={t.id}>
+        <button className={`check ${t.completed ? 'checked' : ''}`} onClick={() => toggle(t.id)}>
+          {t.completed && '✓'}
+        </button>
+ 
+        <span className={`p-dot ${t.priority}`} />
+ 
+        {editId === t.id ? (
+          <input
+            className="edit-input"
+            value={editTxt}
+            autoFocus
+            onChange={e => setEditTxt(e.target.value)}
+            onKeyDown={e => { if (e.key==='Enter') saveEdit(t.id); if (e.key==='Escape') setEditId(null); }}
+            onBlur={() => saveEdit(t.id)}
+          />
+        ) : (
+          <span
+            className={`task-text ${t.completed ? 'done' : ''}`}
+            onDoubleClick={() => { if (!t.completed) { setEditId(t.id); setEditTxt(t.text); }}}
+          >{t.text}</span>
+        )}
+ 
+        <div className="row-actions">
+          {!t.completed && (
+            <button className="icon-btn" onClick={() => { setEditId(t.id); setEditTxt(t.text); }}>✏</button>
+          )}
+          <button className="icon-btn del" onClick={() => del(t.id)}>✕</button>
+        </div>
+      </div>
+    ));
+ 
+    return (
+      <div className="layout">
+ 
+        {/* ── Sidebar ── */}
+        <aside className="sidebar">
+          <div className="brand">
+            <h1>Tasks</h1>
+            <p>{today}</p>
+          </div>
+ 
+          {/* Summary tiles */}
+          <div className="tiles">
+            <div className="tile">
+              <div className="tile-icon">📋</div>
+              <div className="tile-num">{active.length}</div>
+              <div className="tile-label">Remaining</div>
+            </div>
+            <div className="tile">
+              <div className="tile-icon">✅</div>
+              <div className="tile-num">{done.length}</div>
+              <div className="tile-label">Done</div>
+            </div>
+          </div>
+ 
+          {/* Nav */}
+          <div className="nav-section">
+            <div className="nav-heading">Views</div>
+            {navItems.map(n => (
+              <button
+                key={n.key}
+                className={`nav-item ${filter === n.key ? 'active' : ''}`}
+                onClick={() => setFilter(n.key)}
+              >
+                <span className="nav-item-left">
+                  {n.dot && <span className="nav-dot" style={{ background: n.dot }} />}
+                  {n.label}
+                </span>
+                <span className="nav-count">{n.count}</span>
+              </button>
+            ))}
+          </div>
+ 
+          {/* Progress */}
+          <div className="progress-area">
+            <div className="progress-label">
+              <span>Progress</span>
+              <span>{pct}%</span>
+            </div>
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: pct + '%' }} />
+            </div>
+          </div>
+        </aside>
+ 
+        {/* ── Main ── */}
+        <main className="main">
+ 
+          {/* Topbar */}
+          <div className="topbar">
+            <div>
+              <div className="page-title">{navItems.find(n=>n.key===filter)?.label}</div>
+              <div className="page-sub">{visible.length} task{visible.length!==1?'s':''}</div>
+            </div>
+            <div className="topbar-actions">
+              <select className="ctrl-btn" value={sort} onChange={e => setSort(e.target.value)}>
+                <option value="added">Date added</option>
+                <option value="priority">Priority</option>
+                <option value="alpha">A → Z</option>
+              </select>
+              {done.length > 0 && (
+                <button className="ctrl-btn danger" onClick={clear}>Clear done</button>
+              )}
+            </div>
+          </div>
+ 
+          {/* Input */}
+          <div className="input-area">
+            <div className="input-card">
+              <span className="input-icon">+</span>
+              <input
+                className="task-input"
+                placeholder="New task…"
+                value={text}
+                onChange={e => setText(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && add()}
+              />
+              <div className="pills">
+                {['high','med','low'].map(p => (
+                  <button
+                    key={p}
+                    className={`pill ${p} ${pri===p ? 'on' : ''}`}
+                    onClick={() => setPri(prev => prev===p ? 'none' : p)}
+                  >{PRI[p].label}</button>
+                ))}
+              </div>
+              <button className="add-btn" onClick={add}>Add</button>
+            </div>
+          </div>
+ 
+          {/* Content */}
+          <div className="content">
+            {visible.length === 0 ? (
+              <div className="empty">
+                <div className="empty-icon">
+                  {filter === 'done' ? '🎉' : '✓'}
+                </div>
+                <p>{filter === 'done' ? 'Nothing completed yet.' : 'You\'re all caught up.'}</p>
+                <span>{filter === 'all' ? 'Add a task above to get started.' : 'Try a different view.'}</span>
+              </div>
+            ) : showGrouped ? (
+              <>
+                {activeVis.length > 0 && (
+                  <>
+                    <div className="group-header">Active — {activeVis.length}</div>
+                    <div className="task-card">{renderRows(activeVis)}</div>
+                  </>
+                )}
+                {doneVis.length > 0 && (
+                  <>
+                    <div className="group-header">Completed — {doneVis.length}</div>
+                    <div className="task-card">{renderRows(doneVis)}</div>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="task-card">{renderRows(visible)}</div>
+            )}
+          </div>
+        </main>
+      </div>
+    );
+  }
+ 
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
